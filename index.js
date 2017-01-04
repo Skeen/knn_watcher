@@ -44,7 +44,15 @@ parse_json(function(json)
         {
             var hostname = query.hostname || "Unfinished";
             acc[hostname] = (acc[hostname] || 0);
-            acc[hostname] += 1;
+            if(query.timer == null)
+            {
+                acc[hostname] += 1;
+            }
+            else
+            {
+                acc["Working"] = (acc["Working"] || 0);
+                acc["Working"] += 1;
+            }
 
             return acc;
         }, {});
