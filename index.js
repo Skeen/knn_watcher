@@ -38,7 +38,7 @@ var parse_json = function(callback)
 
 parse_json(function(json)
 {
-    var res = json.map(function(task)
+    var res = json.reduce(function(acc, task)
     {
         var res = task.query.reduce(function(acc, query)
         {
@@ -56,7 +56,8 @@ parse_json(function(json)
 
             return acc;
         }, {});
-        return res;
-    });
+        acc[task.name] = res;
+        return acc;
+    }, {});
     console.log(JSON.stringify(res));
 });
