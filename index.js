@@ -38,35 +38,35 @@ var parse_json = function(callback)
 
 parse_json(function(json)
 {
-    var res = json.reduce(function(acc, task)
+    var res = json.map(function(task)
     {
         var res = task.query.reduce(function(acc, query)
         {
             var hostname = query.hostname;
             if(hostname)
             {
-                acc["work"] = (acc["work"] || {});
-                acc["work"][hostname] = (acc["work"][hostname] || 0);
                 if(query.timer == null)
                 {
-                    acc["work"][hostname] += 1;
+                    acc["done"] = (acc["done"] || {});
+                    acc["done"][hostname] = (acc["done"][hostname] || 0);
+                    acc["done"][hostname] += 1;
                 }
                 else
                 {
-                    acc["Working"] = (acc["Working"] || 0);
-                    acc["Working"] += 1;
+                    acc["processing"] = (acc["processing"] || 0);
+                    acc["processing"] += 1;
                 }
             }
             else
             {
-                acc["Unfinished"] = (acc["Unfinished"] || 0);
-                acc["Unfinished"] += 1;
+                acc["queued"] = (acc["queued"] || 0);
+                acc["queued"] += 1;
             }
             
             return acc;
         }, {});
-        acc[task.name] = res;
-        return acc;
-    }, {});
+        res["name"] = task.name;
+        return res;
+    });
     console.log(JSON.stringify(res));
 });
