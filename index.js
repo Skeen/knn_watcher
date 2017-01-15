@@ -40,16 +40,16 @@ parse_json(function(json)
 {
     var res = json.map(function(task)
     {
-        var res = task.query.reduce(function(acc, query)
+        var accum = task.query.reduce(function(acc, query)
         {
             var hostname = query.hostname;
             if(hostname)
             {
                 if(query.timer == null)
                 {
-                    acc["done"] = (acc["done"] || {});
-                    acc["done"][hostname] = (acc["done"][hostname] || 0);
-                    acc["done"][hostname] += 1;
+                    acc["processed"] = (acc["processed"] || {});
+                    acc["processed"][hostname] = (acc["processed"][hostname] || 0);
+                    acc["processed"][hostname] += 1;
                 }
                 else
                 {
@@ -65,8 +65,15 @@ parse_json(function(json)
             
             return acc;
         }, {});
-        res["name"] = task.name;
-        return res;
+        if(accum["processed"])
+        {
+            accum["done"] = Object.values(accum["processed"]).reduce(function(acc, value)
+            {
+                return acc + value;
+            }, 0);
+        }
+        accum["name"] = task.name;
+        return accum;
     });
     console.log(JSON.stringify(res));
 });
