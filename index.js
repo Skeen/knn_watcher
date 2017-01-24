@@ -53,8 +53,8 @@ parse_json(function(json)
                 }
                 else
                 {
-                    acc["processing"] = (acc["processing"] || 0);
-                    acc["processing"] += 1;
+                    acc["processing"] = (acc["processing"] || {});
+                    acc["processing"][hostname] = 1;
                 }
             }
             else
@@ -68,6 +68,13 @@ parse_json(function(json)
         if(accum["processed"])
         {
             accum["done"] = Object.values(accum["processed"]).reduce(function(acc, value)
+            {
+                return acc + value;
+            }, 0);
+        }
+        if(accum["processing"])
+        {
+            accum["assigned"] = Object.values(accum["processing"]).reduce(function(acc, value)
             {
                 return acc + value;
             }, 0);
